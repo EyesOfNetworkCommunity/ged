@@ -1,0 +1,2 @@
+!!! no NTP dependency !!!
+SSL strong auth option : verify peer identity by CN (crt cn field must match dns hostname) => whitelist

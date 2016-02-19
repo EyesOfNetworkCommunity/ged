@@ -1,0 +1,34 @@
+#!/bin/sh
+
+###############################################################################################################
+# A BACKUP OPERATION SHOULD NOT BE INTERRUPTED !
+#
+# editable section
+ged_cmd=/srv/eyesofnetwork/ged/bin/ged
+ged_cfg=/srv/eyesofnetwork/ged/etc/ged.cfg
+#
+###############################################################################################################
+
+# retrieve the loaded backend module configuration file
+ged_bkd_cfg=`cat ${ged_cfg} | grep -v ^';' | grep -v ^# | grep include | grep bkd | awk '{print $2}'`
+
+# retrieve the ged backend module cache directory and file name
+ged_bkd_cache_dir=`cat ${ged_bkd_cfg} | grep cfg_cache | grep -v ^';' | grep -v ^# | awk '{print $2}'`
+ged_bkd_cache_dir=`dirname ${ged_bkd_cache_dir}`
+
+# set the output suffix filename
+suffix=`date +%d%m%y-%H%M%S`
+mkdir -p ${ged_bkd_cache_dir}/ged-dump-${suffix}
+
+# perform the dump
+${ged_cmd} -c ${ged_cfg} -dump active > ${ged_bkd_cache_dir}/ged-dump-${suffix}/ged-dump-active-${suffix}.xml
+${ged_cmd} -c ${ged_cfg} -dump history > ${ged_bkd_cache_dir}/ged-dump-${suffix}/ged-dump-history-${suffix}.xml
+${ged_cmd} -c ${ged_cfg} -dump sync > ${ged_bkd_cache_dir}/ged-dump-${suffix}/ged-dump-sync-${suffix}.xml
+
+# compress the dump
+cd ${ged_bkd_cache_dir} > /dev/null 2>&1
+tar zcf ged-dump-${suffix}.tar.gz ged-dump-${suffix} && rm -rf ged-dump-${suffix}
+cd - > /dev/null 2>&1
+
+# ok
+echo "${ged_bkd_cache_dir}/ged-dump-${suffix}.tar.gz"

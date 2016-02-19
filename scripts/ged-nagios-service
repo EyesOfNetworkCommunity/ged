@@ -1,0 +1,36 @@
+#!/bin/sh
+# Send the informations to Event Browser (gedq)
+#
+# --- Input arguments
+# 	arg1	$HOSTNAME$
+#	arg2	$SERVICEDESC$ 
+#	arg3	$SERVICESTATE$ 
+#	arg4	$SERVICEOUTPUT$
+#	arg5	$HOSTADDRESS$
+#	arg6	$HOSTALIAS$
+#	arg7	$HOSTGROUPS$
+#	arg8	$SERVICEGROUPS$
+
+bin="/srv/eyesofnetwork/ged/bin/gedq"
+
+case "$3" in
+  OK)
+	$bin -push -type 1 "$1" "$2" 0 "" "$4" "$5" "$6" "$7" "$8"
+	$bin -drop -type 1 "$1" "$2" 0
+	$bin -drop -type 1 "$1" "$2" 1
+	$bin -drop -type 1 "$1" "$2" 2
+	$bin -drop -type 1 "$1" "$2" 3
+        ;;
+  WARNING)
+        $bin -push -type 1 "$1" "$2" 1 "" "$4" "$5" "$6" "$7" "$8"
+        ;;
+  CRITICAL)
+	$bin -push -type 1 "$1" "$2" 2 "" "$4" "$5" "$6" "$7" "$8"
+        ;;
+  *)
+	$bin -push -type 1 "$1" "$2" 3 "" "$4" "$5" "$6" "$7" "$8"
+	exit 1
+esac
+
+exit 0
+

@@ -1,0 +1,28 @@
+V 1.4 to V 1.5
+Look like this.
+
+alter table nagios ADD f_sec int(10) unsigned NOT NULL default '0' AFTER m_usec;
+alter table nagios ADD f_usec int(10) unsigned NOT NULL default '0' AFTER f_sec;
+
+alter table nagios_queue_active ADD f_sec int(10) unsigned NOT NULL default '0' AFTER m_usec;
+alter table nagios_queue_active ADD f_usec int(10) unsigned NOT NULL default '0' AFTER f_sec;
+
+alter table nagios_queue_history ADD f_sec int(10) unsigned NOT NULL default '0' AFTER m_usec;
+alter table nagios_queue_history ADD f_usec int(10) unsigned NOT NULL default '0' AFTER f_sec;
+
+alter table nagios_queue_sync ADD f_sec int(10) unsigned NOT NULL default '0' AFTER m_usec;
+alter table nagios_queue_sync ADD f_usec int(10) unsigned NOT NULL default '0' AFTER f_sec;
+
+alter table snmptrap ADD f_sec int(10) unsigned NOT NULL default '0' AFTER m_usec;
+alter table snmptrap ADD f_usec int(10) unsigned NOT NULL default '0' AFTER f_sec;
+
+alter table snmptrap_queue_active ADD f_sec int(10) unsigned NOT NULL default '0' AFTER m_usec;
+alter table snmptrap_queue_active ADD f_usec int(10) unsigned NOT NULL default '0' AFTER f_sec;
+
+alter table snmptrap_queue_history ADD f_sec int(10) unsigned NOT NULL default '0' AFTER m_usec;
+alter table snmptrap_queue_history ADD f_usec int(10) unsigned NOT NULL default '0' AFTER f_sec;
+
+alter table snmptrap_queue_sync ADD f_sec int(10) unsigned NOT NULL default '0' AFTER m_usec;
+alter table snmptrap_queue_sync ADD f_usec int(10) unsigned NOT NULL default '0' AFTER f_sec;
+
+

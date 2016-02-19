@@ -1,0 +1,28 @@
+#!/bin/sh
+
+########################################################################################
+# RESTORE OPERATION SHOULD NOT BE INTERRUPTED !
+########################################################################################
+
+if [ $# -ne 1 ]; then
+	echo "use : $0 archive"
+	exit 1
+fi
+
+filename=`basename $1 .tar.gz`
+
+tar zxf $1 > /dev/null 2>&1
+
+if [ $? != 0 ]; then
+	echo "$1 is not a valid archive for recover operation"
+fi
+
+cd ${filename} > /dev/null
+	/srv/eyesofnetwork/ged/bin/ged -recover *active*.xml
+	/srv/eyesofnetwork/ged/bin/ged -recover *history*.xml
+	/srv/eyesofnetwork/ged/bin/ged -recover *sync*.xml
+cd - > /dev/null
+
+rm -rf ${filename}
+
+exit 0

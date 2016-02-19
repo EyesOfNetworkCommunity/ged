@@ -1,0 +1,14 @@
+Official web site http://generic-ed.sourceforge.net (http://www.eyesofnetwork.com project)
+
+DEPENDENCIES
+gcc version >= 4.0.0 
+pkgconfig
+libgenerics >= 1.2.1
+libxml2 
+libgcrypt
+openssl
+glib
+zlib
+db4
+mysql >= 5.0.0
+
