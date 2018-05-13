@@ -1,0 +1,1 @@
+50 3 * * * * root /srv/eyesofnetwork/ged/scripts/purge_event.sh 86400 > /dev/null 2>&1

@@ -51,8 +51,8 @@ $ENV{'BASH_ENV'}='';
 $ENV{'ENV'}='';
 $Revision="0.2";
 
-my $DB_USER = "root";
-my $DB_PASS = "root66";
+my $DB_USER = "gedadmin";
+my $DB_PASS = "whaza";
 
 my $EON_Host = `/bin/hostname | /usr/bin/tr '\n' ' ' | /bin/sed -e 's: ::g'`;
 my $RSS_Filter_Name = "";
@@ -126,11 +126,11 @@ sub write_event_host_to_rss ($) {
 
       if ( $event->{ service } eq "HOSTDOWN" || $event->{ service } eq "HOST UNREACHABLE" )
       {
-        print FileRSS "<link>http://$EON_Host/thruk/cgi-bin/extinfo.cgi?type=1&host=",$event->{ equipment },"</link>\n";
+        print FileRSS "<link>http://$EON_Host/thruk/cgi-bin/extinfo.cgi?type=1&amp;host=",$event->{ equipment },"</link>\n";
       }
       else
       {
-        print FileRSS "<link>http://$EON_Host/thruk/cgi-bin/extinfo.cgi?type=2&host=",$event->{ equipment },"&service=",$event->{ service },"</link>\n";
+        print FileRSS "<link>http://$EON_Host/thruk/cgi-bin/extinfo.cgi?type=2&amp;host=",$event->{ equipment },"&amp;service=",$event->{ service },"</link>\n";
       }
       print FileRSS "</item>\n";
    }

@@ -2244,7 +2244,7 @@ bool CGEDBackEndMySQL::NotifyPktCfgChange (const long inType, const TGEDPktCfgCh
 				outSQL += ", INDEX USING BTREE (" + inGEDPktCfg->fields[*inGEDPktCfg->keyidc[i]]->name + ")";
 
 			outSQL += ", INDEX USING BTREE (" + GED_MYSQL_DATA_TB_COL_OTV_SEC + "), INDEX USING BTREE (" + GED_MYSQL_DATA_TB_COL_OTV_USEC + 
-				  ")) TYPE=" + GED_MYSQL_TB_TYPE;
+				  ")) ENGINE=" + GED_MYSQL_TB_TYPE;
 
 			if (!ExecuteSQLQuery (outSQL)) return false;
 
@@ -2300,7 +2300,7 @@ bool CGEDBackEndMySQL::NotifyPktCfgChange (const long inType, const TGEDPktCfgCh
 				outSQL += ", INDEX USING BTREE (" + inGEDPktCfg->fields[*inGEDPktCfg->keyidc[i]]->name + ")";
 
 			outSQL += ", INDEX USING BTREE (" + GED_MYSQL_DATA_TB_COL_OTV_SEC + "), INDEX USING BTREE (" + GED_MYSQL_DATA_TB_COL_OTV_USEC + 
-				  ")) TYPE=" + GED_MYSQL_TB_TYPE;
+				  ")) ENGINE=" + GED_MYSQL_TB_TYPE;
 
 			if (!ExecuteSQLQuery (outSQL)) return false;
 
@@ -2357,7 +2357,7 @@ bool CGEDBackEndMySQL::NotifyPktCfgChange (const long inType, const TGEDPktCfgCh
 				outSQL += ", INDEX USING BTREE (" + inGEDPktCfg->fields[*inGEDPktCfg->keyidc[i]]->name + ")";
 
 			outSQL += ", INDEX USING BTREE (" + GED_MYSQL_DATA_TB_COL_OTV_SEC + "), INDEX USING BTREE (" + GED_MYSQL_DATA_TB_COL_OTV_USEC + 
-				  ")) TYPE=" + GED_MYSQL_TB_TYPE;
+				  ")) ENGINE=" + GED_MYSQL_TB_TYPE;
 
 			if (!ExecuteSQLQuery (outSQL)) return false;
 

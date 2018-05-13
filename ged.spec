@@ -1,8 +1,8 @@
 Summary: Generic Event Dispatcher
 Name:ged
 Version:1.5
-Release:6.eon
-Source:%{name}-%{version}.tar.gz
+Release:10.eon
+Source: https://github.com/EyesOfNetworkCommunity/%{name}/archive/master.tar.gz#/%{name}-%{version}.tar.gz
 BuildRoot:/tmp/%{name}-%{version}
 Group:Applications/Base
 Packager: http://generic-ed.sourceforge.net
@@ -15,7 +15,7 @@ BuildRequires: libgcrypt-devel
 BuildRequires: mysql-devel >= 5.0.3
 BuildRequires: glib2-devel
 BuildRequires: zlib-devel
-BuildRequires: db4-devel
+#BuildRequires: db4-devel
 
 Requires: libgenerics >= 1.2-1
 Requires: openssl
@@ -32,23 +32,23 @@ License: GPL
 Group: Applications/Base
 
 Requires: %{name} = %{version}
-Requires: mysql
+Requires: mariadb-server
 
 %description mysql
 GED is a wire designed to handle templated data transmission over HTTP in distributed networks. 
 This is the mysql GED backend.
 
-%package bdb
-Summary: Generic Event Dispatcher Berkeley backend
-License: GPL
-Group: Applications/Base
+#%package bdb
+#Summary: Generic Event Dispatcher Berkeley backend
+#License: GPL
+#Group: Applications/Base
+#
+#Requires: %{name} = %{version}
+#Requires: db4
 
-Requires: %{name} = %{version}
-Requires: db4
-
-%description bdb
-GED is a wire designed to handle templated data transmission over HTTP in distributed networks.
-This is the berkeley GED backend.
+#%description bdb
+#GED is a wire designed to handle templated data transmission over HTTP in distributed networks.
+#This is the berkeley GED backend.
 
 %package devel
 
@@ -62,7 +62,7 @@ Requires: libgcrypt-devel
 Requires: mysql-devel >= 5.0.0
 Requires: glib2-devel
 Requires: zlib-devel
-Requires: db4-devel
+#Requires: db4-devel
 Requires: openssl-devel
 
 %description devel
@@ -70,116 +70,133 @@ GED is a wire designed to handle templated data transmission over HTTP in distri
 This is the devel part as you may want to write your own backend.
 
 %prep
-%setup -q
+%setup -q -n %{name}-master
 
 %build
 	make 
 
 %install
 	rm -rf ${RPM_BUILD_ROOT}
-	mkdir -p ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}-%{version}/bin
-        mkdir -p ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}-%{version}/etc/ssl/easy-rsa
-        mkdir -p ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}-%{version}/etc/bkd
-        mkdir -p ${RPM_BUILD_ROOT}/etc/init.d
+	mkdir -p ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}/bin
+        mkdir -p ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}/etc/ssl/easy-rsa
+        mkdir -p ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}/etc/bkd
         mkdir -p ${RPM_BUILD_ROOT}/etc/cron.d
         mkdir -p ${RPM_BUILD_ROOT}/etc/httpd/conf.d
         mkdir -p ${RPM_BUILD_ROOT}/usr/lib64/pkgconfig
-        mkdir -p ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}-%{version}/lib64
-        mkdir -p ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}-%{version}/man/man8
-        mkdir -p ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}-%{version}/scripts
-        mkdir -p ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}-%{version}/var/www/
+        mkdir -p ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}/lib64
+        mkdir -p ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}/man/man8
+        mkdir -p ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}/scripts
+        mkdir -p ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}/var/www/
+	mkdir -p ${RPM_BUILD_ROOT}%{_unitdir}
 
-        install -m 744 etc.in/gedd ${RPM_BUILD_ROOT}/etc/init.d
         install -m 640 etc.in/ged2rss ${RPM_BUILD_ROOT}/etc/cron.d/
+        install -m 640 etc.in/purge_ged ${RPM_BUILD_ROOT}/etc/cron.d/
         install -m 640 etc.in/ged_rss.conf ${RPM_BUILD_ROOT}/etc/httpd/conf.d/
-        install -m 666 etc.in/*.cfg ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}-%{version}/etc
-        install -m 666 etc.in/bkd/*.cfg ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}-%{version}/etc/bkd
-        install -m 666 etc.in/bkd/geddummy.cfg etc.in/bkd/gedhdb.cfg ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}-%{version}/etc/bkd
-        install -m 755 ged ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}-%{version}/bin
-        install -m 755 gedq ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}-%{version}/bin
-        install -m 755 gedbackup ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}-%{version}/bin
-        install -m 755 gedrestore ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}-%{version}/bin
-        install -m 655 %{name}dummy-%{version}.so %{name}hdb-%{version}.so %{name}mysql-%{version}.so ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}-%{version}/lib64
+        install -m 666 etc.in/*.cfg ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}/etc
+        install -m 666 etc.in/bkd/gedmysql.cfg ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}/etc/bkd
+        install -m 666 etc.in/bkd/geddummy.cfg ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}/etc/bkd
+        install -m 755 ged ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}/bin
+        install -m 755 gedq ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}/bin
+        install -m 755 gedbackup ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}/bin
+        install -m 755 gedrestore ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}/bin
+        install -m 655 %{name}dummy-%{version}.so %{name}mysql-%{version}.so ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}/lib64
         install -m 655 lib%{name}-%{version}.* lib%{name}q-%{version}.* ${RPM_BUILD_ROOT}/usr/lib64
-        install -m 644 etc.in/bkd/*.sql ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}-%{version}/etc/bkd
-        install -m 644 gedq.8.gz ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}-%{version}/man/man8
-        install -m 744 ssl/mk* ssl/check* ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}-%{version}/etc/ssl
-        install -m 744 ssl/easy-rsa/* ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}-%{version}/etc/ssl/easy-rsa
-        install -m 755 scripts/* ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}-%{version}/scripts
+        install -m 644 etc.in/bkd/*.sql ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}/etc/bkd
+        install -m 644 gedq.8.gz ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}/man/man8
+        install -m 744 ssl/mk* ssl/check* ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}/etc/ssl
+        install -m 744 ssl/easy-rsa/* ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}/etc/ssl/easy-rsa
+        install -m 755 scripts/* ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}/scripts
 
         mkdir -p ${RPM_BUILD_ROOT}/usr/include/ged
         install -m 644 inc/* ${RPM_BUILD_ROOT}/usr/include/ged
         install -m 644 %{name}-%{version}.pc ${RPM_BUILD_ROOT}/usr/lib64/pkgconfig
-        install -m 644 var/www/index.html ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}-%{version}/var/www/
+        install -m 644 var/www/index.html ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}/var/www/
+
+	install -m 644 etc.in/gedd.service $RPM_BUILD_ROOT/%{_unitdir}/gedd.service
 
 %post
-	mkdir -p ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}-%{version}/var/cache
-        chmod 777 ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}-%{version}/var/cache
+	mkdir -p ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}/var/cache
+        chmod 777 ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}/var/cache
 
-        mkdir -p ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}-%{version}/var/lib
-        chmod 777 ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}-%{version}/var/lib
+        mkdir -p ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}/var/lib
+        chmod 777 ${RPM_BUILD_ROOT}/srv/eyesofnetwork/%{name}/var/lib
 
-        ln -s /srv/eyesofnetwork/%{name}-%{version} /srv/eyesofnetwork/%{name}
+        ln -s /srv/eyesofnetwork/%{name} /srv/eyesofnetwork/%{name}
 
-        if [ ! -f /srv/eyesofnetwork/%{name}-%{version}/etc/ssl/ca.crt ]; then
-                cd /srv/eyesofnetwork/%{name}-%{version}/etc/ssl
+        if [ ! -f /srv/eyesofnetwork/%{name}/etc/ssl/ca.crt ]; then
+                cd /srv/eyesofnetwork/%{name}/etc/ssl
                 ./mkgedsrvcerts.sh geds
                 ./mkgedclicerts.sh gedc
                 cd -
         fi
+	%systemd_post gedd.service
 
 %preun
-	chkconfig gedd off
-	/etc/init.d/gedd stop > /dev/null 2>&1
+	%systemd_preun gedd.service
 
 %postun
-	rm -rf /srv/eyesofnetwork/%{name}
+	%systemd_postun_with_restart gedd.service
 
 %clean
 	rm -rf ${RPM_BUILD_ROOT}
-	rm -rf /tmp/%{name}-%{version}
+	rm -rf /tmp/%{name}
 
 %files
-%config(noreplace) /srv/eyesofnetwork/%{name}-%{version}/etc/ged.cfg
-%config(noreplace) /srv/eyesofnetwork/%{name}-%{version}/etc/gedq.cfg
-%config(noreplace) /srv/eyesofnetwork/%{name}-%{version}/etc/gedp.cfg
-%config(noreplace) /srv/eyesofnetwork/%{name}-%{version}/etc/gedt.cfg
-%config(noreplace) /srv/eyesofnetwork/%{name}-%{version}/etc/bkd/geddummy.cfg
-/srv/eyesofnetwork/%{name}-%{version}/etc/ssl
-/etc/init.d/gedd
+%config(noreplace) /srv/eyesofnetwork/%{name}/etc/ged.cfg
+%config(noreplace) /srv/eyesofnetwork/%{name}/etc/gedq.cfg
+%config(noreplace) /srv/eyesofnetwork/%{name}/etc/gedp.cfg
+%config(noreplace) /srv/eyesofnetwork/%{name}/etc/gedt.cfg
+%config(noreplace) /srv/eyesofnetwork/%{name}/etc/bkd/geddummy.cfg
+%{_unitdir}/gedd.service
+/srv/eyesofnetwork/%{name}/etc/ssl
 /etc/cron.d/ged2rss
+/etc/cron.d/purge_ged
 /etc/httpd/conf.d/ged_rss.conf
-/srv/eyesofnetwork/%{name}-%{version}/lib64/geddummy-%{version}.so
-/srv/eyesofnetwork/%{name}-%{version}/bin/ged
-/srv/eyesofnetwork/%{name}-%{version}/bin/gedq
-/srv/eyesofnetwork/%{name}-%{version}/bin/gedbackup
-/srv/eyesofnetwork/%{name}-%{version}/bin/gedrestore
-/srv/eyesofnetwork/%{name}-%{version}/man/man8/gedq.8.gz
-/srv/eyesofnetwork/%{name}-%{version}/scripts/ged-nagios-host
-/srv/eyesofnetwork/%{name}-%{version}/scripts/ged-nagios-service
-/srv/eyesofnetwork/%{name}-%{version}/scripts/ged-snmptt
-/srv/eyesofnetwork/%{name}-%{version}/scripts/ged2rss.pl
-/srv/eyesofnetwork/%{name}-%{version}/scripts/
-/srv/eyesofnetwork/%{name}-%{version}/var/www/index.html
+/srv/eyesofnetwork/%{name}/lib64/geddummy-%{version}.so
+/srv/eyesofnetwork/%{name}/bin/ged
+/srv/eyesofnetwork/%{name}/bin/gedq
+/srv/eyesofnetwork/%{name}/bin/gedbackup
+/srv/eyesofnetwork/%{name}/bin/gedrestore
+/srv/eyesofnetwork/%{name}/man/man8/gedq.8.gz
+/srv/eyesofnetwork/%{name}/scripts/
+/srv/eyesofnetwork/%{name}/var/www/index.html
 /usr/lib64/libged-%{version}.so
 /usr/lib64/libged-%{version}.a
 /usr/lib64/libgedq-%{version}.so
 /usr/lib64/libgedq-%{version}.a
 
-%files bdb
-%config(noreplace) /srv/eyesofnetwork/%{name}-%{version}/etc/bkd/gedhdb.cfg
-/srv/eyesofnetwork/%{name}-%{version}/lib64/gedhdb-%{version}.so
+#%files bdb
+#%config(noreplace) /srv/eyesofnetwork/%{name}/etc/bkd/gedhdb.cfg
+#/srv/eyesofnetwork/%{name}/lib64/gedhdb-%{version}.so
 
 %files mysql
-%config(noreplace) /srv/eyesofnetwork/%{name}-%{version}/etc/bkd/gedmysql.cfg
-/srv/eyesofnetwork/%{name}-%{version}/lib64/gedmysql-%{version}.so
-/srv/eyesofnetwork/%{name}-%{version}/etc/bkd/ged-init.sql
+%config(noreplace) /srv/eyesofnetwork/%{name}/etc/bkd/gedmysql.cfg
+/srv/eyesofnetwork/%{name}/lib64/gedmysql-%{version}.so
+/srv/eyesofnetwork/%{name}/etc/bkd/ged-init.sql
 
 %files devel
 /usr/include/ged
 /usr/lib64/pkgconfig/%{name}-%{version}.pc
 
 %changelog
+* Tue Nov 28 2017 Jean-Philippe Levy <jeanphilippe.levy@gmail.com> - 1.5.10 
+- Update for EyesOfNetwork 5.2
+
+* Wed May 04 2016 Jean-Philippe Levy <jeanphilippe.levy@gmail.com> - 1.5.9  
+- Add systemd service
+- Fix do not copy gedhdb.cfg 
+- Fix ged_rss.conf
+
+* Wed May 04 2016 Michael Aubertin <michael.aubertin@gmail.com> - 1.5-8
+- Patch Nagios relation file script
+- Add daily purge with Problem MGT
+
+* Tue Apr 19 2016 Michael Aubertin <michael.aubertin@gmail.com> - 1.5-7
+- With Eric Belhomme :)
+- Replace TYPE by ENGINE and build against EON5 (centos7)
+- Remove Berkeley DB Backend
+- Replace Nagios Scripts
+
 * Mon Jan 13 2014 Jeremie Bernard <gremi@users.sourceforge.net> - 1.5.6
 - Fix casting variables for 64 Bits arch.
 
@@ -207,19 +224,19 @@ This is the devel part as you may want to write your own backend.
 * Wed May 30 2012 Jeremie Bernard <gremi@users.sourceforge.net> - 1.4.10
 - Handling my database issue regarding mysql backend.
 
-* Wed May 11 2012 Michael Aubertin <michael.aubertin@gmail.com> - 1.4.9
+* Fri May 11 2012 Michael Aubertin <michael.aubertin@gmail.com> - 1.4.9
 - Hacking script for migration facilities 
 - Fixing 0 addition in case of uncomplete gedq -push packet.
 - Change ack default time in conf file
 - Remove sync as default in gedt.cfg
 
-* Wed Apr 23 2012 Michael Aubertin <michael.aubertin@gmail.com> - 1.4.8
+* Mon Apr 23 2012 Michael Aubertin <michael.aubertin@gmail.com> - 1.4.8
 - Fixing end of heap segfault in CChunk object in case of null argument packet dropping.
 
 * Wed Apr 18 2012 Michael Aubertin <michael.aubertin@gmail.com> - 1.4.7
 - Allow compatibility of sync queue between 1.2.12 and 1.4 series.
 
-* Wed Apr 16 2012 Michael Aubertin <michael.aubertin@gmail.com> - 1.4.6
+* Mon Apr 16 2012 Michael Aubertin <michael.aubertin@gmail.com> - 1.4.6
 - Fixing gedq version number
 
 * Wed Apr 04 2012 Michael Aubertin <michael.aubertin@gmail.com> - 1.4.5
@@ -238,7 +255,7 @@ This is the devel part as you may want to write your own backend.
 * Fri Mar 9 2012 Michael Aubertin <michael.aubertin@gmail.com> - 1.4.1
 - Multiple optimisation. MySQL 5.5 compliant. Multi-table handling
 
-* Thu Oct 4 2011 Jeremie Bernard <gremi@users.sourceforge.net> - 1.2.12
+* Tue Oct 4 2011 Jeremie Bernard <gremi@users.sourceforge.net> - 1.2.12
 - Daemonization patch (tty detach : pgrp)
 
 * Sun Oct 2 2011 Jeremie Bernard <gremi@users.sourceforge.net> - 1.2.11
@@ -258,7 +275,7 @@ This is the devel part as you may want to write your own backend.
 * Fri Apr 9 2010 Jeremie Bernard <gremi@users.sourceforge.net> - 1.2.7
 - mysql filters (< > ' ") options addon
 
-* Thu Feb 9 2010 Jeremie Bernard <gremi@users.sourceforge.net> - 1.2.6
+* Tue Feb 9 2010 Jeremie Bernard <gremi@users.sourceforge.net> - 1.2.6
 - connect option replaces bind to specify gedq and gedt targets
 - bind option remains but now forces source interface to be used
 
@@ -295,7 +312,7 @@ This is the devel part as you may want to write your own backend.
 - ged daemon mode
 - mysql backend temporary removed
 
-* Thu Dec 30 2008 Jeremie Bernard <gremi@users.sourceforge.net> - 1.2.0 
+* Tue Dec 30 2008 Jeremie Bernard <gremi@users.sourceforge.net> - 1.2.0 
 - lzo removal, zlib use instead
 - http/s tunnel implementation
 - proxy basic and ntlm auth handling

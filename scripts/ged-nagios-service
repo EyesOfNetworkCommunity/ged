@@ -23,12 +23,18 @@ case "$3" in
         ;;
   WARNING)
         $bin -push -type 1 "$1" "$2" 1 "" "$4" "$5" "$6" "$7" "$8"
+        $bin -drop -type 1 "$1" "$2" 2
+        $bin -drop -type 1 "$1" "$2" 3
         ;;
   CRITICAL)
 	$bin -push -type 1 "$1" "$2" 2 "" "$4" "$5" "$6" "$7" "$8"
+        $bin -drop -type 1 "$1" "$2" 1
+        $bin -drop -type 1 "$1" "$2" 3
         ;;
   *)
 	$bin -push -type 1 "$1" "$2" 3 "" "$4" "$5" "$6" "$7" "$8"
+        $bin -drop -type 1 "$1" "$2" 1
+        $bin -drop -type 1 "$1" "$2" 2
 	exit 1
 esac
 

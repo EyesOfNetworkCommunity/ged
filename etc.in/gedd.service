@@ -1,0 +1,11 @@
+[Unit]
+Description=Generic Event Dispatcher Daemon
+After=network.target
+After=mariadb.service
+
+[Service]
+Type=forking
+ExecStart=/srv/eyesofnetwork/ged/bin/ged -c /srv/eyesofnetwork/ged/etc/ged.cfg
+
+[Install]
+WantedBy=multi-user.target

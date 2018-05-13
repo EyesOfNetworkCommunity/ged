@@ -30,9 +30,10 @@ GED	      := ged
 GEDQ	      := gedq
 MODDUMMY      := geddummy-1.5.so
 MODMYSQL      := gedmysql-1.5.so
-MODHDB	      := gedhdb-1.5.so
-MODTDB	      := gedtdb-1.5.so
-MOD	      := $(MODDUMMY) $(MODHDB) $(MODMYSQL)
+#MODHDB	      := gedhdb-1.5.so
+#MODTDB	      := gedtdb-1.5.so
+#MOD	      := $(MODDUMMY) $(MODHDB) $(MODMYSQL)
+MOD	      := $(MODDUMMY) $(MODMYSQL)
 
 # debug preprocessors
 GEDDEBUG      := -D__GED_DEBUG_SQL__ -D__GED_DEBUG_SEM__
@@ -46,7 +47,7 @@ LIBS	      := `pkg-config --libs libgenerics-1.3`
 LIBS	      += `pkg-config --libs glib-2.0`
 LIBS	      += -lssl -lpthread -lgcrypt -lz
 MYSQLLIBS     := /usr/lib64/mysql/libmysqlclient.so
-BDBLIBS	      := /usr/lib64/libdb.so
+#BDBLIBS	      := /usr/lib64/libdb.so
 
 # paths
 SRCCOR	      := ./src
@@ -90,7 +91,7 @@ dummy: $(MODDUMMY)
 
 mysql: $(MODMYSQL)
 
-bdb : $(MODHDB) $(MODTDB)
+#bdb : $(MODHDB) $(MODTDB)
 
 # generic rules
 csocket.o : $(SRCCOR)/csocket.c
@@ -141,17 +142,17 @@ gedq.o : $(SRCCOR)/gedq.c
 	@echo "[CC] $<"
 	@$(CC) $(GEDQFLAGS) -c $<
 
-cgedbackendbdb.o : $(SRCCOR)/cgedbackendbdb.c
-	@echo "[CC] $<"
-	@$(CC) $(GEDFLAGS) -o $@ -c $<
+#cgedbackendbdb.o : $(SRCCOR)/cgedbackendbdb.c
+#	@echo "[CC] $<"
+#	@$(CC) $(GEDFLAGS) -o $@ -c $<
 
-cgedbackendhdb.o : $(SRCCOR)/cgedbackendhdb.c
-	@echo "[CC] $<"
-	@$(CC) $(GEDFLAGS) -o $@ -c $<
-
-cgedbackendtdb.o : $(SRCCOR)/cgedbackendtdb.c
-	@echo "[CC] $<"
-	@$(CC) $(GEDFLAGS) -o $@ -c $<
+#cgedbackendhdb.o : $(SRCCOR)/cgedbackendhdb.c
+#	@echo "[CC] $<"
+#	@$(CC) $(GEDFLAGS) -o $@ -c $<
+#
+#cgedbackendtdb.o : $(SRCCOR)/cgedbackendtdb.c
+#	@echo "[CC] $<"
+#	@$(CC) $(GEDFLAGS) -o $@ -c $<
 
 # main targets
 $(GED) : $(LIBGED) gedmain.o
@@ -188,13 +189,13 @@ geddummy-1.5.so : $(SRCCOR)/cgedbackenddummy.c
 	@echo "[LK] $@"
 	@$(CC) -shared $(GEDFLAGS) $^ -o $@
 
-gedhdb-1.5.so : cgedbackendbdb.o cgedbackendhdb.o
-	@echo "[LK] $@"
-	@$(CC) -shared $(GEDFLAGS) $^ -o $@ $(BDBLIBS)
+#gedhdb-1.5.so : cgedbackendbdb.o cgedbackendhdb.o
+#	@echo "[LK] $@"
+#	@$(CC) -shared $(GEDFLAGS) $^ -o $@ $(BDBLIBS)
 
-gedtdb-1.5.so : cgedbackendbdb.o cgedbackendtdb.o
-	@echo "[LK] $@"
-	@$(CC) -shared $(GEDFLAGS) $^ -o $@ $(BDBLIBS)
+#gedtdb-1.5.so : cgedbackendbdb.o cgedbackendtdb.o
+#	@echo "[LK] $@"
+#	@$(CC) -shared $(GEDFLAGS) $^ -o $@ $(BDBLIBS)
 
 clean :
 	@echo -n "cleaning... "
