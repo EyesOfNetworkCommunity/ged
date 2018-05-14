@@ -1,3 +1,5 @@
+%define __perl_requires /bin/false
+
 Summary: Generic Event Dispatcher
 Name:ged
 Version:1.5
