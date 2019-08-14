@@ -3,8 +3,8 @@
 Summary: Generic Event Dispatcher
 Name:ged
 Version:1.5
-Release:10.eon
-Source: https://github.com/EyesOfNetworkCommunity/%{name}/archive/master.tar.gz#/%{name}-%{version}.tar.gz
+Release:11.eon
+Source: https://github.com/EyesOfNetworkCommunity/%{name}/archive/%{branch}.tar.gz#/%{name}-%{version}.tar.gz
 BuildRoot:/tmp/%{name}-%{version}
 Group:Applications/Base
 Packager: http://generic-ed.sourceforge.net
@@ -24,6 +24,8 @@ Requires: openssl
 Requires: libgcrypt
 Requires: glib2
 Requires: zlib
+
+%define branch	1.5-11
 
 %description
 GED is a wire designed to handle templated data transmission over HTTP in distributed networks. 
@@ -72,7 +74,7 @@ GED is a wire designed to handle templated data transmission over HTTP in distri
 This is the devel part as you may want to write your own backend.
 
 %prep
-%setup -q -n %{name}-master
+%setup -q -n %{name}-%{branch}
 
 %build
 	make 
@@ -181,6 +183,9 @@ This is the devel part as you may want to write your own backend.
 /usr/lib64/pkgconfig/%{name}-%{version}.pc
 
 %changelog
+* Thu Aug 14 2019 Sebastien DAVOULT <d@vou.lt> - 1.5.11
+- Fix Semaphore issue
+
 * Tue Nov 28 2017 Jean-Philippe Levy <jeanphilippe.levy@gmail.com> - 1.5.10 
 - Update for EyesOfNetwork 5.2
 
