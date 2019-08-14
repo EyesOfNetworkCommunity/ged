@@ -5,7 +5,10 @@ After=mariadb.service
 
 [Service]
 Type=forking
+ExecStopPost=/srv/eyesofnetwork/ged/scripts/ipcrm.sh
+ExecStartPre=/srv/eyesofnetwork/ged/scripts/ipcrm.sh
 ExecStart=/srv/eyesofnetwork/ged/bin/ged -c /srv/eyesofnetwork/ged/etc/ged.cfg
+Restart=always
 
 [Install]
 WantedBy=multi-user.target
